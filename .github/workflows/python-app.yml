@@ -29,13 +29,13 @@ jobs:
         pip install requests
         pip install tqdm
 
-    - name: set default value for new version
-      if: ${{ github.event.inputs.new == '' || github.event.inputs.new == 'latest' }} 
-      run: echo "::set-output name=default_new::latest"
-        
     - name: Running
       run: |
-        python main.py --old "${{ github.event.inputs.old }}"  --new "${{ github.event.inputs.new || steps.set_default_new.outputs.default_new }}" --save true
+        if: ${{ github.event.inputs.new == '' || github.event.inputs.new == 'latest' }}; then 
+          python main.py --old "${{ github.event.inputs.old }}"  --save true
+        else:
+          python main.py --old "${{ github.event.inputs.old }}"  --new "${{ github.event.inputs.new }}" --save true
+        fi
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
