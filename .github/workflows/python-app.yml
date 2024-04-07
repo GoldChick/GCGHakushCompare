@@ -1,8 +1,14 @@
 name: GCG Hakush Compare
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      old:
+        description: 'Old Version (like 4.5 | 4.5.54)'
+        required: true
+      new:
+        description: 'New Version (latest when default)'
+        required: false
 
 permissions:
   contents: read
@@ -23,9 +29,13 @@ jobs:
         pip install requests
         pip install tqdm
 
-    - name: Test with pytest
+    - name: set default value for new version
+      if: ${{ github.event.inputs.new == '' || github.event.inputs.new == 'latest' }} 
+      run: echo "::set-output name=default_new::latest"
+        
+    - name: Running
       run: |
-        python main.py --old 4.5
+        python main.py --old "${{ github.event.inputs.old }}"  --new "${{ github.event.inputs.new || steps.set_default_new.outputs.default_new }}" --save true
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
