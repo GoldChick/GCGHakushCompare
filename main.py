@@ -12,7 +12,7 @@ from compare import compare
 from convert import action2md
 
 if __name__ == '__main__':
-    default_old = '4.5.53'
+    default_old = '4.5'
     parser = argparse.ArgumentParser(description='parser example')
     parser.add_argument('--old', default=default_old, type=str,
                         help=f'来自hakush的一个旧版本。默认为{default_old}。')
@@ -20,11 +20,14 @@ if __name__ == '__main__':
                         help='来自hakush的一个新版本。默认为最新。')
     parser.add_argument('--simple', default=False, type=bool,
                         help='是否生成简单的Markdown文件（方便不能预览的人阅读），默认为否。')
+    parser.add_argument('--save', default=False, type=bool,
+                        help='是否额外生成不加版本号的文件（方便给github actions使用），默认为否。')
     args = parser.parse_args()
 
     old_version = args.old
     new_version = args.new
     simple = args.simple
+    save = args.save
 
     print(f"将进行{old_version}和{new_version}关于角色牌、行动牌和状态的比较！并且生成{'简单' if simple else '复杂'}markdown文件！")
 
@@ -37,8 +40,8 @@ if __name__ == '__main__':
             old_version = check_version(old_version, info_dict['version'])
             new_version = check_version(new_version, info_dict['version'])
 
-            _, compare_a = compare(old_version, new_version)
-            action2md(old_version, new_version, compare_a, simple)
+            _, compare_a = compare(old_version, new_version, save)
+            action2md(old_version, new_version, compare_a, simple, save)
         else:
             raise Exception('未得到正确hakush版本介绍json！请检查hakush网站是否正常！')
     else:

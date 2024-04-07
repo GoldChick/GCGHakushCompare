@@ -38,7 +38,7 @@ def _inner_compare(old: dict, new: dict):
     return compare_dict
 
 
-def compare(old_version: str, new_version: str):
+def compare(old_version: str, new_version: str, another_save_with_no_version=False):
     old_c, old_a = load_all_cards(old_version)
     old_a = fill(old_version, old_a)
 
@@ -57,5 +57,11 @@ def compare(old_version: str, new_version: str):
     with open(f"./compare/{old_version}_{new_version}_actions_compare.json", '+w', encoding='utf-8')as compare:
         compare.write(json.dumps(compare_a, ensure_ascii=False, indent=2))
         print(f"已成功生成{old_version}和{new_version}行动牌、状态信息比对的文件！")
+
+    if another_save_with_no_version:
+        with open('./characters_compare.json', '+w', encoding='utf-8')as compare:
+            compare.write(json.dumps(compare_c, ensure_ascii=False, indent=2))
+        with open(f"./actions_compare.json", '+w', encoding='utf-8')as compare:
+            compare.write(json.dumps(compare_a, ensure_ascii=False, indent=2))
 
     return compare_c, compare_a

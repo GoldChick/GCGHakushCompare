@@ -26,3 +26,12 @@ jobs:
     - name: Test with pytest
       run: |
         python main.py --old 4.5
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: generated-files
+        path: |
+          actions_compare.json
+          characters_compare.json
+          actions_compare.md

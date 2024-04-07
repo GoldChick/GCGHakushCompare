@@ -22,7 +22,7 @@ def _get_str_diff(old: str, new: str, simple=False):
     return diff
 
 
-def action2md(old_version: str, new_version: str, compare_dict: dict, simple=False):
+def action2md(old_version: str, new_version: str, compare_dict: dict, simple=False, another_save_with_no_version=False):
     old_items = {}
     new_items = {}
 
@@ -70,14 +70,20 @@ def action2md(old_version: str, new_version: str, compare_dict: dict, simple=Fal
 
     if not os.path.exists('./md'):
         os.mkdir('./md')
-    with open(f"./md/{old_version}_{new_version}_actions_compare.md", '+w', encoding='utf-8')as md:
-        md.write('# <font color=#FF00FF>OLD</font>\n')
-        for name, obj in old_items.items():
-            inner_write(name, obj, md)
 
-        md.write('# <font color=#FF00FF>NEW</font>\n')
-        for name, obj in new_items.items():
-            inner_write(name, obj, md)
+    def one_save(path: str):
+        with open(path, '+w', encoding='utf-8')as md:
+            md.write('# <font color=#FF00FF>OLD</font>\n')
+            for name, obj in old_items.items():
+                inner_write(name, obj, md)
+
+            md.write('# <font color=#FF00FF>NEW</font>\n')
+            for name, obj in new_items.items():
+                inner_write(name, obj, md)
+
+    one_save(f"./md/{old_version}_{new_version}_actions_compare.md")
+    if another_save_with_no_version:
+        one_save(f"./actions_compare.md")
 
 
 # 没有投入使用，但是其实是可以用的
