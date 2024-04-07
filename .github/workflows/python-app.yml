@@ -29,13 +29,13 @@ jobs:
         pip install requests
         pip install tqdm
 
-    - name: Running
-      run: |
-        if: ${{ github.event.inputs.new == '' || github.event.inputs.new == 'latest' }}; then 
-          python main.py --old "${{ github.event.inputs.old }}"  --save true
-        else:
-          python main.py --old "${{ github.event.inputs.old }}"  --new "${{ github.event.inputs.new }}" --save true
-        fi
+    - name: Running With Default New
+      if: ${{ github.event.inputs.new == '' || github.event.inputs.new == 'latest' }}
+      run: python main.py --old "${{ github.event.inputs.old }}"  --save true
+
+    - name: Running With Default New
+      if: ${{ github.event.inputs.new != '' && github.event.inputs.new != 'latest' }}
+      run: python main.py --old "${{ github.event.inputs.old }}"  --new "${{ github.event.inputs.new }}" --save true
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
