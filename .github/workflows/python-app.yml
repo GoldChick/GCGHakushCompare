@@ -40,7 +40,7 @@ jobs:
       if: ${{ github.event.inputs.new != '' && github.event.inputs.new != 'latest' }}
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ github.event.inputs.old }}_${{ steps..outputs.new }}_compare
+        name: ${{ github.event.inputs.old }}_${{ github.event.inputs.new }}_compare
         path: |
           actions_compare.json
           characters_compare.json
