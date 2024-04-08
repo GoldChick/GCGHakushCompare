@@ -20,10 +20,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
     - name: Set up Python 3.11
       uses: actions/setup-python@v3
       with:
         python-version: "3.11"
+        
     - name: Install dependencies
       run: |
         pip install requests
@@ -31,19 +33,22 @@ jobs:
 
     - name: Running With New
       if: ${{ github.event.inputs.new != '' && github.event.inputs.new != 'latest' }}
-      run: python main.py --old "${{ github.event.inputs.old }}"  --new "${{ github.event.inputs.new }}" --save true
+      run: |
+        python main.py --old "${{ github.event.inputs.old }}"  --new "${{ github.event.inputs.new }}" --save true
+        echo "new=${{ github.event.inputs.new }}" >> $GITHUB_OUTPUT
+        
       
     - name: Running With Default New
       if: ${{ github.event.inputs.new == '' || github.event.inputs.new == 'latest' }}
       run: |
         python main.py --old "${{ github.event.inputs.old }}"  --save true
-        echo '::set-output name=new::latest'
+        echo "new=latest" >> $GITHUB_OUTPUT
 
 
     - name: Generate File
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ github.event.inputs.old }}_${{ github.event.inputs.new }}_compare
+        name: ${{ github.event.inputs.old }}_${{ outputs.new }}_compare
         path: |
           actions_compare.json
           characters_compare.json
