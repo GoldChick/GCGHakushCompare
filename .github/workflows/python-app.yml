@@ -1,4 +1,4 @@
-name: GCG Hakush Compare ${{ github.event.inputs.old }} and ${{ github.event.inputs.new || latest}} 
+name: GCG Hakush Compare
 
 on:
   workflow_dispatch:
@@ -37,6 +37,7 @@ jobs:
         python main.py --old "${{ github.event.inputs.old }}"  --new "${{ github.event.inputs.new }}" --save true
 
     - name: Generate File With New
+      if: ${{ github.event.inputs.new != '' && github.event.inputs.new != 'latest' }}
       uses: actions/upload-artifact@v2
       with:
         name: ${{ github.event.inputs.old }}_${{ steps..outputs.new }}_compare
