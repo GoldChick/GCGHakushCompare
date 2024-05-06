@@ -1,8 +1,14 @@
 name: GCG Hakush Compare
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      old:
+        description: 'Old Version (like 4.5 | 4.5.54)'
+        required: true
+      new:
+        description: 'New Version (latest when default)'
+        required: false
 
 permissions:
   contents: read
@@ -14,24 +20,45 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
     - name: Set up Python 3.11
       uses: actions/setup-python@v3
       with:
         python-version: "3.11"
+        
     - name: Install dependencies
       run: |
         pip install requests
         pip install tqdm
 
-    - name: Test with pytest
+    - name: Running With New
+      if: ${{ github.event.inputs.new != '' && github.event.inputs.new != 'latest' }}
       run: |
-        python main.py --old 4.5
+        python main.py --old "${{ github.event.inputs.old }}"  --new "${{ github.event.inputs.new }}" --save true
 
-    - name: Upload Artifact
+    - name: Generate File With New
+      if: ${{ github.event.inputs.new != '' && github.event.inputs.new != 'latest' }}
       uses: actions/upload-artifact@v2
       with:
-        name: generated-files
+        name: ${{ github.event.inputs.old }}_${{ github.event.inputs.new }}_compare
         path: |
           actions_compare.json
           characters_compare.json
           actions_compare.md
+      
+    - name: Running With Default New
+      if: ${{ github.event.inputs.new == '' || github.event.inputs.new == 'latest' }}
+      run: |
+        python main.py --old "${{ github.event.inputs.old }}"  --save true
+
+
+    - name: Generate File With Default New
+      if: ${{ github.event.inputs.new == '' || github.event.inputs.new == 'latest' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ github.event.inputs.old }}_latest_compare
+        path: |
+          actions_compare.json
+          characters_compare.json
+          actions_compare.md
+          
