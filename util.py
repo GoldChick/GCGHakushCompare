@@ -79,6 +79,8 @@ def _element_process(element: str, default='物理') -> str:
             return '秘'
         case 'PAIMON':
             return '白'
+        case 'SAME':
+            return '白'
         case 'VOID':
             return default
         case _:
@@ -150,7 +152,8 @@ def _get_all_cards(version: str):
             'Desc': re.sub(r'\{[^}]*\}', '', cards[key]['Desc'])
         }
         if key in js.keys():
-            simple_card['Tags'] = '+'.join(js[key]['tag'])
+            if 'tag' in js[key].keys():
+                simple_card['Tags'] = '+'.join(js[key]['tag'])
             simple_card['Cost'] = '+'.join([f"{cost['count']}{_element_process(cost['costType'],'黑')}" for cost in list(
                 filter(lambda dic: 'count' in dic.keys(), js[key]['cost']))])
         actions[key] = simple_card
