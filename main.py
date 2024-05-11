@@ -10,7 +10,7 @@ import argparse
 from util import check_version
 from compare import compare
 from convert import action2md
-
+from keqing import compare_skill
 if __name__ == '__main__':
     default_old = '4.5'
     parser = argparse.ArgumentParser(description='parser example')
@@ -42,6 +42,7 @@ if __name__ == '__main__':
 
             _, compare_a = compare(old_version, new_version, save)
             action2md(old_version, new_version, compare_a, simple, save)
+            compare_skill(old_version)
         else:
             raise Exception('未得到正确hakush版本介绍json！请检查hakush网站是否正常！')
     else:

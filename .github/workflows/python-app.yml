@@ -60,5 +60,6 @@ jobs:
         path: |
           actions_compare.json
           characters_compare.json
+          keqing_diffs.json
           actions_compare.md
           

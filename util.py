@@ -126,6 +126,7 @@ def _get_all_cards(version: str):
         os.mkdir(f'./detail/{version}')
 
     characters = {}
+    skills = {}
     # 这里的cards除了角色牌、行动牌还有状态
     cards = get_json(version, 'card')
 
@@ -141,9 +142,7 @@ def _get_all_cards(version: str):
             v) for k, v in card['Talent'].items()}
         characters[key] = char
 
-    with open(f"./detail/{version}/characters.json", '+w', encoding='utf-8')as compare:
-        compare.write(json.dumps(characters, ensure_ascii=False, indent=2))
-        print(f'{version}版本characters信息保存成功！')
+        skills |= char['Skills']
 
     actions = {}
     for key in tqdm(cards.keys(), desc=f"正在获取{version}所有行动牌和状态中……", unit='item'):
@@ -161,6 +160,20 @@ def _get_all_cards(version: str):
     with open(f"./detail/{version}/actions.json", '+w', encoding='utf-8')as compare:
         compare.write(json.dumps(actions, ensure_ascii=False, indent=2))
         print(f'{version}版本actions信息保存成功！')
+
+    for v in skills.values():
+        tmp = re.sub(r'[\[\]$]', '', v['Desc'])
+        tmp = re.sub(r'[\\\\n]', '', tmp)
+        tmp = re.sub(r'S(\d+)', lambda m: skills[m[1]]['Name'], tmp)
+        v['Desc'] = re.sub(r'C(\d+)', lambda m: actions[m[1]]['Name'], tmp)
+
+    with open(f"./detail/{version}/skill.json", '+w', encoding='utf-8')as compare:
+        compare.write(json.dumps(skills, ensure_ascii=False, indent=2))
+        print(f'{version}版本character skill信息保存成功！')
+
+    with open(f"./detail/{version}/characters.json", '+w', encoding='utf-8')as compare:
+        compare.write(json.dumps(characters, ensure_ascii=False, indent=2))
+        print(f'{version}版本characters信息保存成功！')
 
     return characters, actions
 

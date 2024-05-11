@@ -1,6 +1,23 @@
 #  GCG Hakush Compare Script
-调取hakush的api进行比对，生成json文件和md文件
-## 运行
+调取hakush.in的api进行比对，生成json文件和md文件  
+调用玉衡杯数据库的api进行技能数值的比对（hakush并不频繁更新测试服数值）  
+  
+将来可能会更多的使用玉衡杯数据库，速度会更快一些（很远的将来！）
+## github action
+fork之后，在github action进行run workflow  
+输入旧版本（如4.5 | 4.5.54）、新版本（不输默认为最新版本latest）,等待后即可下载包含比对文件的压缩包  
+压缩包中包含:
+- hakush-行动牌比对json
+- hakush-行动牌比对markdown
+- hakush-角色牌比对(不含技能数值)json
+- hakush(old)-玉衡杯数据库-角色技能比对(可能含有技能数值)json
+
+可以打开网站观察目前的最新版本，再决定是否运行   
+
+链接：
+[hakush.in](https://gi16.hakush.in/gcg)
+[玉衡杯数据库](https://homdgcat.wiki/gi/gcg?lang=CH)
+## 本地运行
 入口见于main.py，直接运行或者附加参数运行即可（由于时常的更新，推荐至少指定old版本）  
   
 [data文件夹](./data/)内存储从hakush下载的json文件  
